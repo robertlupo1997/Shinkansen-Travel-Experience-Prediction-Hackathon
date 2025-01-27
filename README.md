@@ -17,6 +17,8 @@ This project was developed as part of a **hackathon** to predict **passenger sat
 - **Impact:** By identifying key factors influencing satisfaction, train operators can **improve services**, reduce negative feedback, and **increase customer retention**.  
 
 ---
+### **Data Source**  
+Dataset provided by [MIT IDSS](https://idss.mit.edu/) as part of the hackathon challenge.  
 
 ## 📁 **Data Description**
 ### **📜 Dataset Provided in Hackathon**
@@ -33,7 +35,7 @@ This project was developed as part of a **hackathon** to predict **passenger sat
 |---------|------------|
 | `ID` | Unique passenger identifier |
 | `Gender` | Male / Female |
-| `Age` | Age of the passenger (numeric/binned) |
+| `Age` | Age of the passenger (numeric) |
 | `Customer_Type` | Loyal or Disloyal Customer |
 | `Travel_Class` | Business / Economy |
 | `Travel_Distance` | Distance traveled (km/miles) |
@@ -52,7 +54,8 @@ shinkansen-travel-experience/
 │   ├── Traveldata_test.csv
 │   └── Surveydata_test.csv
 ├── notebook/
-│   ├── shinkansen-travel-experience.ipynb       # Main Jupyter notebook for EDA & modeling
+│   ├── shinkansen-travel-experience.ipynb       # Main Jupyter notebook
+│   ├── shinkansen-travel-experience.html       # easy viewing of notebook
 ├── outputs/
 │   ├── submission.csv           # Final prediction output for Kaggle
 ├── README.md                    # Project overview & instructions
@@ -64,12 +67,12 @@ Follow these steps to set up the project and run the model.
 
 ### **1️⃣ Clone the Repository**
 ```
-git clone https://github.com/your-username/shinkansen-travel-experience.git
+git clone https://github.com/robertlupo1997/Shinkansen-Travel-Experience-Prediction-Hackathon.git
 cd shinkansen-travel-experience
 ```
 ### **2️⃣ Install Dependencies
 ```
-pip install pandas numpy scikit-learn xgboost lightgbm catboost seaborn matplotlib
+pip install pandas numpy scikit-learn lightgbm catboost seaborn matplotlib
 ```
 ### **3️⃣ Obtain the Data
 - **Ensure your CSV files are in the data/ directory, or update the paths in the notebook if they are stored elsewhere.**
@@ -92,14 +95,12 @@ submission.to_csv('submission.csv', index=False)
 
 ### **1️⃣ Data Preprocessing**
 - **Handling Missing Values**:
-  - Imputed missing numerical values using **mean**.
-  - Categorical features were filled using **mode (most frequent value)**.
-  - Certain missing values were replaced with "Unknown" where appropriate.
+  - Dropped rows with missing values for simplicity.
+  - *Note: Future work should use imputation (e.g., mode/median) to preserve data.*
   
 - **Feature Engineering**:
-  - **Binning `Age`**: Converted into categorical bins (`25`, `35`, `45`, `60`, `80`).
-  - **Ordinal Encoding**: Converted ratings like "Poor" → `1`, "Excellent" → `5`.
   - **One-Hot Encoding**: Applied to nominal categorical variables (`Gender`, `Travel_Class`, `Customer_Type`).
+  - *Note: Future work should use ordinal encoding for survey ratings (e.g., "Poor" → 1, "Excellent" → 5) to preserve ordinality.*
   - **Scaling**: Used `StandardScaler` (Z-score normalization) for numerical features.
 
 - **Data Splitting**:
@@ -109,14 +110,8 @@ submission.to_csv('submission.csv', index=False)
 ---
 
 ### **2️⃣ Machine Learning Models Tested**
-- **Baseline Model**:
-  - **Logistic Regression**: Simple linear model for benchmarking.
-
-- **Tree-Based Models**:
-  - **Random Forest**: Ensemble learning with multiple decision trees.
-  - **XGBoost**: Gradient boosting with advanced regularization.
-  - **LightGBM**: Faster, memory-efficient boosting algorithm.
-  - **CatBoost**: Handles categorical features natively, reducing preprocessing effort.
+- **LightGBM**: Gradient boosting with fast training.
+- **CatBoost**: Handles categorical features natively.
 
 ---
 
@@ -125,7 +120,6 @@ submission.to_csv('submission.csv', index=False)
 - Parameters tuned:
   - **LightGBM**: `num_leaves`, `n_estimators`, `learning_rate`.
   - **CatBoost**: `depth`, `learning_rate`, `iterations`.
-  - **Random Forest**: `n_estimators`, `max_depth`, `min_samples_split`.
 
 - Optimized models were retrained on the full dataset before final predictions.
 
@@ -164,7 +158,7 @@ Using feature importance analysis from tree-based models, the **top drivers** of
 | 2️⃣  | **Cleanliness** | ✨ Highly correlated with satisfaction |
 | 3️⃣  | **Onboard Service** | 🛎 Passengers who rated onboard service poorly were more likely to be dissatisfied |
 | 4️⃣  | **Arrival Time Convenience** | ⏳ Directly impacted overall experience |
-| 5️⃣  | **Travel Class** | 🏢 Business class passengers had consistently higher satisfaction |
+| 5️⃣  | **Business Class** | 🏢 Passengers in business class had higher satisfaction |
 
 ---
 
@@ -191,6 +185,11 @@ Using feature importance analysis from tree-based models, the **top drivers** of
 🔹 **Explore time-series factors**, such as peak travel seasons affecting satisfaction.  
 🔹 **Investigate class imbalance strategies** (though the dataset appeared fairly balanced).  
 
+## 🔮 Future Work
+- Implement advanced imputation (KNN/MICE) instead of dropping rows.
+- Use ordinal encoding for survey ratings (e.g., "Poor" → 1, "Excellent" → 5).
+- Experiment with ensemble stacking (LightGBM + CatBoost).
+
 ## 📜 License
 
 This project is licensed under the **MIT License**.  
@@ -213,7 +212,7 @@ See the [LICENSE](LICENSE) file for full details.
 - **Machine Learning Community**: Special thanks to Kaggle discussions, Stack Overflow, and open-source contributors for valuable insights on hyperparameter tuning, feature engineering, and modeling strategies.  
 - **Python & ML Libraries**:  
   - **scikit-learn**: For model training and evaluation  
-  - **XGBoost, LightGBM, CatBoost**: For advanced boosting techniques  
+  - **LightGBM, CatBoost**: For advanced boosting techniques 
   - **Pandas & NumPy**: For efficient data processing  
   - **Seaborn & Matplotlib**: For visualizing insights  
 
